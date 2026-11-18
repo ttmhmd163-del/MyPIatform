@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد | منصتي</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f6f9fd;
+            color: #172b4d;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            padding: 18px 24px;
+            background: linear-gradient(115deg, #102247, #174a88);
+            box-shadow: 0 4px 18px rgba(16, 34, 71, 0.16);
+        }
+
+        .header-inner {
+            width: min(100%, 1160px);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand-name {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .home-link {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .home-link:hover,
+        .home-link:focus-visible {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        main {
+            width: min(100%, 560px);
+            margin: 0 auto;
+            padding: 48px 24px;
+            flex: 1;
+            display: grid;
+            align-content: center;
+        }
+
+        .auth-card {
+            padding: clamp(24px, 6vw, 40px);
+            border: 1px solid #e3ebf5;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 16px 42px rgba(16, 42, 86, 0.09);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #102a56;
+            font-size: clamp(27px, 5vw, 34px);
+            line-height: 1.4;
+        }
+
+        .intro {
+            margin: 0 0 28px;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        form {
+            display: grid;
+            gap: 17px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            color: #243b5a;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            min-height: 48px;
+            padding: 11px 13px;
+            border: 1px solid #d5dfeb;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #172b4d;
+            font: inherit;
+            font-size: 15px;
+        }
+
+        input::placeholder {
+            color: #9aa8b9;
+        }
+
+        input:focus-visible {
+            border-color: #1769c2;
+            outline: 3px solid rgba(23, 105, 194, 0.15);
+        }
+
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="text"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        input#full-name {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .password-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-control input {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .toggle-password {
+            min-height: 48px;
+            padding: 0 12px;
+            border: 1px solid #d5dfeb;
+            border-radius: 10px;
+            background: #eef6ff;
+            color: #1769c2;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .toggle-password:hover,
+        .toggle-password:focus-visible {
+            background: #e2efff;
+        }
+
+        .primary-button {
+            width: 100%;
+            min-height: 50px;
+            margin-top: 4px;
+            border: 0;
+            border-radius: 11px;
+            background: #1769c2;
+            color: #ffffff;
+            font: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(23, 105, 194, 0.2);
+            transition: background-color 160ms ease, transform 160ms ease;
+        }
+
+        .primary-button:hover {
+            background: #1056a2;
+            transform: translateY(-1px);
+        }
+
+        .form-feedback {
+            margin: 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .form-feedback.error {
+            border: 1px solid #f1c5c5;
+            background: #fff3f3;
+            color: #a12c2c;
+        }
+
+        .form-feedback.success {
+            border: 1px solid #b9dfca;
+            background: #f0fbf4;
+            color: #21613b;
+        }
+
+        .text-button {
+            justify-self: start;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: #1769c2;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
+
+        .profile-preview-link {
+            width: 100%;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #1769c2;
+            border-radius: 11px;
+            color: #1769c2;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .profile-preview-link:hover,
+        .profile-preview-link:focus-visible {
+            background: #eef6ff;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .demo-note {
+            margin: 18px 0 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #eef6ff;
+            color: #385b83;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .auth-switch {
+            margin: 22px 0 0;
+            color: #64748b;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .auth-switch a {
+            color: #1769c2;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-switch a:hover,
+        .auth-switch a:focus-visible {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        footer {
+            padding: 18px 24px;
+            border-top: 1px solid #e3ebf5;
+            color: #718096;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px 18px;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+            }
+
+            .brand-name {
+                font-size: 24px;
+            }
+
+            main {
+                padding: 28px 16px;
+            }
+
+            .auth-card {
+                border-radius: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-inner">
+            <a class="brand-link" href="index.html" aria-label="منصتي - الصفحة الرئيسية">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </a>
+            <a class="home-link" href="index.html">العودة للرئيسية</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="auth-card" aria-labelledby="signup-title">
+            <h1 id="signup-title">إنشاء حساب جديد</h1>
+            <p class="intro">أنشئ حسابك على منصتي للبدء باستخدام الخدمات.</p>
+
+            <form id="signup-form" novalidate autocomplete="off">
+                <div class="field">
+                    <label for="full-name">الاسم الكامل</label>
+                    <input id="full-name" name="name" type="text" maxlength="90" autocomplete="name" placeholder="اكتب اسمك الكامل" required>
+                </div>
+
+                <div class="field">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input id="email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="phone">رقم الهاتف</label>
+                    <input id="phone" name="phone" type="tel" maxlength="25" autocomplete="tel" placeholder="+966 5X XXX XXXX" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">كلمة المرور</label>
+                    <div class="password-control">
+                        <input id="password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" placeholder="8 أحرف على الأقل" aria-describedby="signup-feedback" required>
+                        <button class="toggle-password" type="button" aria-controls="password" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="confirm-password">تأكيد كلمة المرور</label>
+                    <div class="password-control">
+                        <input id="confirm-password" name="confirm-password" type="password" minlength="8" maxlength="128" autocomplete="new-password" placeholder="أعد إدخال كلمة المرور" aria-describedby="signup-feedback" required>
+                        <button class="toggle-password" type="button" aria-controls="confirm-password" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button>
+                    </div>
+                </div>
+
+                <button class="primary-button" type="submit">إنشاء الحساب</button>
+                <p id="signup-feedback" class="form-feedback" aria-live="polite" hidden></p>
+                <button id="resend-signup-confirmation" class="text-button" type="button" hidden>إعادة إرسال رسالة التأكيد</button>
+                <a id="profile-preview-link" class="profile-preview-link" href="profile.html" hidden>فتح الملف الشخصي</a>
+            </form>
+
+            <p class="demo-note">تُدار المصادقة بأمان عبر Supabase Auth، ويُنشأ ملفك الشخصي تلقائيًا بعد التسجيل.</p>
+            <p class="auth-switch">لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+        </section>
+    </main>
+
+    <footer>جميع الحقوق محفوظة © 2026</footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="auth-store.js"></script>
+    <script>
+        const signupForm = document.getElementById('signup-form');
+        const signupFeedback = document.getElementById('signup-feedback');
+        const profilePreviewLink = document.getElementById('profile-preview-link');
+        const fullNameInput = document.getElementById('full-name');
+        const signupEmailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const resendConfirmationButton = document.getElementById('resend-signup-confirmation');
+
+        function showSignupError(message, input) {
+            signupFeedback.textContent = message;
+            signupFeedback.className = 'form-feedback error';
+            signupFeedback.setAttribute('role', 'alert');
+            signupFeedback.hidden = false;
+            input.setAttribute('aria-invalid', 'true');
+            input.focus();
+            profilePreviewLink.hidden = true;
+        }
+
+        document.querySelectorAll('.toggle-password').forEach((toggle) => {
+            toggle.addEventListener('click', () => {
+                const input = document.getElementById(toggle.getAttribute('aria-controls'));
+                const shouldShow = input.type === 'password';
+
+                input.type = shouldShow ? 'text' : 'password';
+                toggle.textContent = shouldShow ? 'إخفاء' : 'إظهار';
+                toggle.setAttribute('aria-label', shouldShow ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
+                toggle.setAttribute('aria-pressed', String(shouldShow));
+            });
+        });
+
+        function resetSignupPasswords() {
+            [passwordInput, confirmPasswordInput].forEach((input) => {
+                input.value = '';
+                input.type = 'password';
+            });
+            document.querySelectorAll('.toggle-password').forEach((toggle) => {
+                toggle.textContent = 'إظهار';
+                toggle.setAttribute('aria-label', 'إظهار كلمة المرور');
+                toggle.setAttribute('aria-pressed', 'false');
+            });
+        }
+
+        resendConfirmationButton.addEventListener('click', async () => {
+            signupEmailInput.removeAttribute('aria-invalid');
+            const email = signupEmailInput.value.trim();
+            if (!email || !signupEmailInput.checkValidity()) {
+                showSignupError('أدخل بريدًا إلكترونيًا صحيحًا لإعادة إرسال رسالة التأكيد.', signupEmailInput);
+                return;
+            }
+
+            resendConfirmationButton.disabled = true;
+            try {
+                await PlatformAuth.resendSignupConfirmation(email);
+                signupFeedback.textContent = 'إذا كان الحساب بحاجة إلى التأكيد، فستصلك رسالة تأكيد جديدة.';
+                signupFeedback.className = 'form-feedback success';
+                signupFeedback.setAttribute('role', 'status');
+                signupFeedback.hidden = false;
+            } catch (error) {
+                signupFeedback.textContent = error.message || 'تعذر إعادة إرسال رسالة التأكيد.';
+                signupFeedback.className = 'form-feedback error';
+                signupFeedback.setAttribute('role', 'alert');
+                signupFeedback.hidden = false;
+            } finally {
+                resendConfirmationButton.disabled = false;
+            }
+        });
+
+        signupForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            [fullNameInput, signupEmailInput, phoneInput, passwordInput, confirmPasswordInput].forEach((input) => {
+                input.removeAttribute('aria-invalid');
+            });
+            profilePreviewLink.hidden = true;
+            resendConfirmationButton.hidden = true;
+
+            if (!fullNameInput.value.trim()) {
+                showSignupError('يرجى إدخال الاسم الكامل.', fullNameInput);
+                return;
+            }
+
+            if (!signupEmailInput.value.trim()) {
+                showSignupError('يرجى إدخال البريد الإلكتروني.', signupEmailInput);
+                return;
+            }
+
+            if (!signupEmailInput.checkValidity()) {
+                showSignupError('يرجى إدخال بريد إلكتروني صحيح، مثل name@example.com.', signupEmailInput);
+                return;
+            }
+
+            const normalizedPhone = phoneInput.value.trim()
+                .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+                .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
+            if (!/^\+?[\d\s()-]+$/.test(normalizedPhone) || normalizedPhone.replace(/\D/g, '').length < 7) {
+                showSignupError('يرجى إدخال رقم هاتف صحيح يحتوي على 7 أرقام على الأقل.', phoneInput);
+                return;
+            }
+
+            if (!passwordInput.value) {
+                showSignupError('يرجى إدخال كلمة المرور.', passwordInput);
+                return;
+            }
+
+            if (!confirmPasswordInput.value) {
+                showSignupError('يرجى تأكيد كلمة المرور.', confirmPasswordInput);
+                return;
+            }
+
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                resetSignupPasswords();
+                showSignupError('كلمتا المرور غير متطابقتين. أعد إدخالهما.', passwordInput);
+                return;
+            }
+
+            if (passwordInput.value.length < 8) {
+                showSignupError('يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.', passwordInput);
+                return;
+            }
+
+            const submitButton = signupForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            try {
+                const user = await PlatformAuth.register({
+                    name: fullNameInput.value.trim(),
+                    email: signupEmailInput.value.trim(),
+                    phone: normalizedPhone,
+                    password: passwordInput.value
+                });
+                resetSignupPasswords();
+                if (user.needsEmailConfirmation) {
+                    signupFeedback.textContent = 'تم إنشاء الحساب. افتح رسالة التأكيد التي أرسلناها إلى بريدك، ثم سجّل الدخول.';
+                    signupFeedback.className = 'form-feedback success';
+                    signupFeedback.setAttribute('role', 'status');
+                    signupFeedback.hidden = false;
+                    resendConfirmationButton.hidden = false;
+                    profilePreviewLink.hidden = true;
+                    return;
+                }
+
+                signupFeedback.textContent = 'تم إنشاء حسابك وتسجيل الدخول. يمكنك فتح ملفك الشخصي.';
+                signupFeedback.className = 'form-feedback success';
+                signupFeedback.setAttribute('role', 'status');
+                signupFeedback.hidden = false;
+                profilePreviewLink.hidden = false;
+            } catch (error) {
+                resetSignupPasswords();
+                signupFeedback.textContent = error.message || 'تعذر إنشاء الحساب.';
+                signupFeedback.className = 'form-feedback error';
+                signupFeedback.setAttribute('role', 'alert');
+                signupFeedback.hidden = false;
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

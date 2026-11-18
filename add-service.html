@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أضف خدمتك | منصتي</title>
+    <link rel="stylesheet" href="services.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand-link" href="index.html" aria-label="منصتي - الصفحة الرئيسية">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </a>
+            <nav class="header-links" aria-label="روابط الصفحة">
+                <a href="services.html">الخدمات</a>
+                <a href="dashboard.html">لوحة التحكم</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="services-page-main">
+        <div class="page-heading">
+            <p class="eyebrow">شارك خدمتك</p>
+            <h1>أضف خدمتك</h1>
+            <p class="page-description">أدخل تفاصيل الخدمة وحدد حالة نشرها.</p>
+        </div>
+
+        <p class="demo-notice">تُحفظ الخدمة في حسابك. الخدمات المنشورة فقط تظهر للزوار.</p>
+
+        <section class="panel form-panel" aria-label="نموذج إضافة خدمة">
+            <form class="service-form" id="service-form" novalidate>
+                <div class="field">
+                    <label for="service-name">اسم الخدمة</label>
+                    <input id="service-name" name="name" type="text" maxlength="90" placeholder="مثال: تصميم شعار" required>
+                </div>
+
+                <div class="field">
+                    <label for="service-category">تصنيف الخدمة</label>
+                    <select id="service-category" name="category" required>
+                        <option value="">اختر تصنيفًا</option>
+                    </select>
+                </div>
+
+                <div class="field field-wide">
+                    <label for="service-description">وصف الخدمة</label>
+                    <textarea id="service-description" name="description" maxlength="1500" placeholder="اشرح تفاصيل الخدمة وما الذي تتضمنه" required></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="service-price">السعر بالجنيه المصري</label>
+                    <input id="service-price" name="price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
+                    <p class="field-help">السعر للعرض فقط؛ لا يوجد دفع إلكتروني.</p>
+                </div>
+
+                <div class="field">
+                    <label for="service-status">حالة الخدمة</label>
+                    <select id="service-status" name="status" required>
+                        <option value="published">منشورة</option>
+                        <option value="draft">مسودة</option>
+                        <option value="archived">مؤرشفة</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="service-image">صورة الخدمة (اختيارية)</label>
+                    <input id="service-image" name="image" type="file" accept="image/png,image/jpeg,image/webp">
+                    <p class="field-help">PNG أو JPG أو WEBP، وبحجم لا يتجاوز 3 ميغابايت.</p>
+                </div>
+
+                <div class="field">
+                    <label for="provider-name">اسم مقدم الخدمة</label>
+                    <input id="provider-name" name="provider-name" type="text" maxlength="90" placeholder="الاسم الذي سيظهر للعملاء" required>
+                </div>
+
+                <div class="field">
+                    <label for="provider-email">بريد الحساب (خاص)</label>
+                    <input id="provider-email" name="provider-email" type="email" maxlength="254" placeholder="name@example.com" required>
+                    <p class="field-help">لا يُنشر هذا البريد ضمن بيانات الخدمة.</p>
+                </div>
+
+                <div class="form-actions">
+                    <button class="primary-button" id="submit-service" type="submit">أضف خدمتك</button>
+                    <a class="secondary-button" href="services.html">العودة إلى الخدمات</a>
+                </div>
+                <p class="form-feedback" id="service-feedback" aria-live="polite" hidden></p>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">لا يوجد دفع إلكتروني في هذه النسخة.</footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="services-store.js"></script>
+    <script src="auth-store.js"></script>
+    <script>
+        (async function initializeServiceForm() {
+            const serviceForm = document.getElementById('service-form');
+            const serviceNameInput = document.getElementById('service-name');
+            const serviceDescriptionInput = document.getElementById('service-description');
+            const serviceCategoryInput = document.getElementById('service-category');
+            const servicePriceInput = document.getElementById('service-price');
+            const serviceStatusInput = document.getElementById('service-status');
+            const serviceImageInput = document.getElementById('service-image');
+            const providerNameInput = document.getElementById('provider-name');
+            const providerEmailInput = document.getElementById('provider-email');
+            const serviceFeedback = document.getElementById('service-feedback');
+            const submitServiceButton = document.getElementById('submit-service');
+            const serviceId = new URLSearchParams(window.location.search).get('id');
+            let currentUser;
+            let existingService = null;
+
+            function showServiceError(message, input) {
+                serviceFeedback.textContent = message;
+                serviceFeedback.className = 'form-feedback error';
+                serviceFeedback.setAttribute('role', 'alert');
+                serviceFeedback.hidden = false;
+                if (input) {
+                    input.focus();
+                }
+            }
+
+            try {
+                currentUser = await PlatformAuth.getCurrentUser();
+            } catch (error) {
+                showServiceError(error.message || 'تعذر الاتصال بحسابك.');
+                submitServiceButton.disabled = true;
+                return;
+            }
+            if (!currentUser) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            PlatformServiceStore.categories.forEach((category) => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                serviceCategoryInput.append(option);
+            });
+            providerNameInput.value = currentUser.name;
+            providerEmailInput.value = currentUser.email;
+            providerNameInput.readOnly = true;
+            providerEmailInput.readOnly = true;
+
+            if (serviceId) {
+                try {
+                    existingService = await PlatformServiceStore.getById(serviceId, currentUser.id);
+                } catch (error) {
+                    showServiceError(error.message || 'تعذر تحميل بيانات الخدمة.');
+                    submitServiceButton.disabled = true;
+                    return;
+                }
+                if (!existingService) {
+                    showServiceError('لا يمكن تعديل هذه الخدمة؛ قد لا تكون موجودة أو لا تتبع هذا الحساب.');
+                    submitServiceButton.disabled = true;
+                    return;
+                }
+
+                document.title = 'تعديل الخدمة | منصتي';
+                document.querySelector('.page-heading h1').textContent = 'تعديل الخدمة';
+                document.querySelector('.page-description').textContent = 'حدّث بيانات خدمتك المنشورة أو غيّر حالتها.';
+                submitServiceButton.textContent = 'حفظ التعديلات';
+                serviceNameInput.value = existingService.name;
+                serviceDescriptionInput.value = existingService.description;
+                serviceCategoryInput.value = existingService.category;
+                servicePriceInput.value = String(existingService.price);
+                serviceStatusInput.value = existingService.status;
+            }
+
+            function showServiceSuccess(service) {
+                serviceFeedback.className = 'form-feedback success';
+                serviceFeedback.setAttribute('role', 'status');
+                serviceFeedback.replaceChildren(document.createTextNode('تم حفظ الخدمة في حسابك. '));
+                const detailsLink = document.createElement('a');
+                detailsLink.href = `service-details.html?id=${encodeURIComponent(service.id)}`;
+                detailsLink.textContent = 'عرض تفاصيلها';
+                serviceFeedback.append(detailsLink);
+                serviceFeedback.hidden = false;
+            }
+
+            async function saveService(imageFile) {
+                const values = {
+                    name: serviceNameInput.value.trim(),
+                    description: serviceDescriptionInput.value.trim(),
+                    category: serviceCategoryInput.value,
+                    price: servicePriceInput.valueAsNumber,
+                    status: serviceStatusInput.value
+                };
+                let service;
+                if (existingService) {
+                    service = await PlatformServiceStore.update(existingService.id, currentUser.id, values);
+                    if (!service) {
+                        throw new Error('لم يتم حفظ التعديلات؛ قد لا تملك صلاحية تعديل هذه الخدمة.');
+                    }
+                } else {
+                    service = await PlatformServiceStore.add({ ...values, ownerId: currentUser.id });
+                    existingService = service;
+                }
+
+                if (imageFile) {
+                    try {
+                        service.imageData = await PlatformServiceStore.saveImage(service.id, currentUser.id, imageFile);
+                    } catch (error) {
+                        showServiceError(`تم حفظ بيانات الخدمة، لكن تعذر حفظ الصورة: ${error.message || 'خطأ غير معروف.'}`);
+                        return;
+                    }
+                }
+
+                if (!serviceId) {
+                    serviceForm.reset();
+                    providerNameInput.value = currentUser.name;
+                    providerEmailInput.value = currentUser.email;
+                    serviceStatusInput.value = 'published';
+                }
+                showServiceSuccess(service);
+            }
+
+            serviceForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                serviceFeedback.hidden = true;
+                if (!serviceNameInput.value.trim()) {
+                    showServiceError('يرجى إدخال اسم الخدمة.', serviceNameInput);
+                    return;
+                }
+                if (!serviceDescriptionInput.value.trim()) {
+                    showServiceError('يرجى إدخال وصف الخدمة.', serviceDescriptionInput);
+                    return;
+                }
+                if (!serviceCategoryInput.value) {
+                    showServiceError('يرجى اختيار تصنيف الخدمة.', serviceCategoryInput);
+                    return;
+                }
+                if (servicePriceInput.value === '' || !Number.isFinite(servicePriceInput.valueAsNumber) || !servicePriceInput.checkValidity()) {
+                    const priceMessage = servicePriceInput.validity.stepMismatch
+                        ? 'يرجى إدخال السعر بحد أقصى منزلتين عشريتين.'
+                        : 'يرجى إدخال سعر صحيح بالجنيه المصري لا يقل عن صفر.';
+                    showServiceError(priceMessage, servicePriceInput);
+                    return;
+                }
+                if (!['draft', 'published', 'archived'].includes(serviceStatusInput.value)) {
+                    showServiceError('يرجى اختيار حالة صحيحة للخدمة.', serviceStatusInput);
+                    return;
+                }
+
+                const imageFile = serviceImageInput.files[0];
+                if (imageFile) {
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!allowedTypes.includes(imageFile.type)) {
+                        showServiceError('اختر صورة بصيغة JPG أو PNG أو WEBP.', serviceImageInput);
+                        return;
+                    }
+                    if (imageFile.size > 3 * 1024 * 1024) {
+                        showServiceError('يجب ألا يتجاوز حجم الصورة 3 ميغابايت.', serviceImageInput);
+                        return;
+                    }
+                }
+
+                submitServiceButton.disabled = true;
+                try {
+                    await saveService(imageFile || null);
+                } catch (error) {
+                    showServiceError(error.message || 'تعذر حفظ الخدمة.');
+                } finally {
+                    submitServiceButton.disabled = false;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

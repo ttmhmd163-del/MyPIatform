@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصتي</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #172b4d;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(115deg, #102247, #174a88);
+            color: #ffffff;
+            padding: 18px 24px;
+            box-shadow: 0 4px 18px rgba(16, 34, 71, 0.16);
+        }
+
+        .header-inner {
+            width: min(100%, 1160px);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand-name {
+            margin: 0;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-actions a {
+            min-height: 42px;
+            padding: 10px 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background-color 160ms ease, color 160ms ease;
+        }
+
+        .header-actions a:hover,
+        .header-actions a:focus-visible {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .header-actions .header-signup {
+            border-color: #ffffff;
+            background: #ffffff;
+            color: #174a88;
+        }
+
+        .header-actions .header-signup:hover,
+        .header-actions .header-signup:focus-visible {
+            background: #eaf3ff;
+        }
+
+        .site-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e8eef5;
+        }
+
+        .nav-inner {
+            width: min(100%, 1160px);
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            min-height: 58px;
+        }
+
+        .site-nav a {
+            color: #425875;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 160ms ease;
+        }
+
+        .site-nav a:hover,
+        .site-nav a:focus-visible {
+            color: #1769c2;
+        }
+
+        main {
+            width: min(100%, 1160px);
+            flex: 1;
+            margin: 0 auto;
+            padding: 0 24px 88px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 20px;
+            color: #102a56;
+            font-size: clamp(32px, 5vw, 48px);
+            line-height: 1.35;
+        }
+
+        p {
+            max-width: 620px;
+            margin: 0 auto 34px;
+            color: #52647d;
+            font-size: clamp(17px, 2.5vw, 20px);
+            line-height: 1.9;
+        }
+
+        .hero {
+            padding: clamp(64px, 9vw, 104px) 0 84px;
+        }
+
+        .legacy-greeting {
+            display: table;
+            margin: 0 auto 18px;
+            padding: 8px 15px;
+            border-radius: 999px;
+            background: #eef6ff;
+            color: #1769c2;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .hero-lead {
+            margin-bottom: 10px;
+            color: #1769c2;
+            font-size: clamp(19px, 3vw, 23px);
+            font-weight: 700;
+        }
+
+        .hero-description {
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: #1769c2;
+            color: #ffffff;
+            border: none;
+            padding: 15px 36px;
+            border-radius: 12px;
+            font: inherit;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(23, 105, 194, 0.2);
+            transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        button:hover {
+            background: #1056a2;
+            transform: translateY(-2px);
+            box-shadow: 0 11px 22px rgba(23, 105, 194, 0.25);
+        }
+
+        button:focus-visible {
+            outline: 3px solid #8fc4ff;
+            outline-offset: 4px;
+        }
+
+        .services {
+            padding-top: 42px;
+            border-top: 1px solid #e8eef5;
+        }
+
+        .services h2 {
+            margin: 0 0 12px;
+            color: #102a56;
+            font-size: clamp(28px, 4vw, 36px);
+        }
+
+        .services-intro {
+            margin-bottom: 34px;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            text-align: right;
+        }
+
+        .service-card {
+            padding: 28px 24px;
+            border: 1px solid #e3ebf5;
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 8px 24px rgba(16, 42, 86, 0.06);
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(16, 42, 86, 0.1);
+        }
+
+        .service-icon {
+            width: 46px;
+            height: 46px;
+            margin-bottom: 18px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: #eef6ff;
+            color: #1769c2;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .service-card h3 {
+            margin: 0 0 10px;
+            color: #17365f;
+            font-size: 20px;
+        }
+
+        .service-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        footer {
+            padding: 20px 24px;
+            border-top: 1px solid #e8eef5;
+            color: #718096;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @media (max-width: 760px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .service-card {
+                padding: 24px 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px 18px;
+            }
+
+            .header-actions {
+                gap: 8px;
+            }
+
+            .header-actions a {
+                min-height: 38px;
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+            }
+
+            .brand-name {
+                font-size: 25px;
+            }
+
+            .nav-inner {
+                padding: 0 20px;
+                min-height: 54px;
+                gap: 24px;
+            }
+
+            main {
+                padding: 0 20px 72px;
+            }
+
+            .hero {
+                padding: 64px 0 68px;
+            }
+
+            .services {
+                padding-top: 34px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-inner">
+            <div class="brand-group">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </div>
+            <div class="header-actions">
+                <a class="header-login" href="login.html">تسجيل الدخول</a>
+                <a class="header-signup" href="signup.html">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="site-nav" aria-label="القائمة الرئيسية">
+        <div class="nav-inner">
+            <a href="#home">الرئيسية</a>
+            <a href="services.html">عرض الخدمات</a>
+            <a href="#services">خدماتنا</a>
+        </div>
+    </nav>
+
+    <main id="home">
+        <section class="hero" aria-labelledby="welcome-title">
+            <p class="legacy-greeting">أهلاً بك في منصتنا 🚀</p>
+            <h1 id="welcome-title">مرحبًا بك في منصتي</h1>
+            <p class="hero-lead">كل ما تحتاجه في مكان واحد.</p>
+            <p class="hero-description">
+                هنا تبدأ رحلتنا لبناء منصة إلكترونية مميزة.
+            </p>
+
+            <button onclick="document.getElementById('services').scrollIntoView({ behavior: 'smooth', block: 'start' })">
+                ابدأ الآن
+            </button>
+        </section>
+
+        <section class="services" id="services" aria-labelledby="services-title">
+            <h2 id="services-title">خدماتنا</h2>
+            <p class="services-intro">اكتشف ما يجعل تجربتك في منصتي أكثر سهولة وتنظيمًا.</p>
+
+            <div class="services-grid">
+                <article class="service-card">
+                    <span class="service-icon" aria-hidden="true">✦</span>
+                    <h3>كل شيء في مكان واحد</h3>
+                    <p>اجمع احتياجاتك الأساسية ضمن مساحة واحدة واضحة.</p>
+                </article>
+
+                <article class="service-card">
+                    <span class="service-icon" aria-hidden="true">✓</span>
+                    <h3>تجربة سهلة</h3>
+                    <p>تنقّل بسيط يساعدك على الوصول لما تبحث عنه.</p>
+                </article>
+
+                <article class="service-card">
+                    <span class="service-icon" aria-hidden="true">↗</span>
+                    <h3>مساحة قابلة للتوسع</h3>
+                    <p>ابدأ بخطوات بسيطة وطوّر تجربتك مع الوقت.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        جميع الحقوق محفوظة © 2026
+    </footer>
+
+</body>
+</html>

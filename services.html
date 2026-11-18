@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الخدمات | منصتي</title>
+    <link rel="stylesheet" href="services.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand-link" href="index.html" aria-label="منصتي - الصفحة الرئيسية">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </a>
+            <nav class="header-links" aria-label="روابط الصفحة">
+                <a href="dashboard.html">لوحة التحكم</a>
+                <a class="primary-link" href="add-service.html">أضف خدمتك</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="services-page-main">
+        <div class="page-heading">
+            <p class="eyebrow">استكشف الخدمات</p>
+            <h1 id="services-title">الخدمات المنشورة</h1>
+            <p class="page-description">اكتشف الخدمات المنشورة من مقدمي الخدمات على منصتي.</p>
+        </div>
+
+        <p class="demo-notice">تظهر هنا الخدمات المنشورة فقط. تتم حماية بيانات المالك والطلبات وفق صلاحيات الحساب.</p>
+
+        <section aria-label="البحث والتصفية عن الخدمات">
+            <div class="listing-toolbar">
+                <div class="field">
+                    <label for="service-search">ابحث عن خدمة</label>
+                    <input id="service-search" type="search" placeholder="اكتب اسم الخدمة أو وصفها">
+                </div>
+                <div class="field">
+                    <label for="category-filter">تصفية حسب التصنيف</label>
+                    <select id="category-filter">
+                        <option value="">جميع التصنيفات</option>
+                    </select>
+                </div>
+            </div>
+
+            <p class="result-summary" id="result-summary" aria-live="polite"></p>
+            <div class="empty-state" id="services-empty">جارٍ تحميل الخدمات...</div>
+            <div class="service-grid" id="service-grid"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">الأسعار المعروضة للتعريف بالخدمات؛ يتم تسجيل سعر الطلب من قاعدة البيانات.</footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="services-store.js"></script>
+    <script src="auth-store.js"></script>
+    <script>
+        (async function initializeServiceList() {
+            let services;
+            const providerFilter = new URLSearchParams(window.location.search).get('provider');
+            const searchInput = document.getElementById('service-search');
+            const categoryFilter = document.getElementById('category-filter');
+            const serviceGrid = document.getElementById('service-grid');
+            const emptyState = document.getElementById('services-empty');
+            const resultSummary = document.getElementById('result-summary');
+            if (providerFilter) {
+                document.getElementById('services-title').textContent = 'خدمات مقدم الخدمة';
+            }
+
+            PlatformServiceStore.categories.forEach((category) => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.append(option);
+            });
+
+            function formatPrice(price) {
+                return new Intl.NumberFormat('ar-EG', {
+                    style: 'currency',
+                    currency: 'EGP',
+                    maximumFractionDigits: 2
+                }).format(price);
+            }
+
+            function createServiceCard(service) {
+                const article = document.createElement('article');
+                article.className = 'service-card';
+                if (service.imageData) {
+                    const image = document.createElement('img');
+                    image.className = 'service-card-image';
+                    image.src = service.imageData;
+                    image.alt = `صورة خدمة ${service.name}`;
+                    article.append(image);
+                } else {
+                    const imagePlaceholder = document.createElement('div');
+                    imagePlaceholder.className = 'service-image-placeholder';
+                    imagePlaceholder.textContent = 'لا توجد صورة مرفقة';
+                    article.append(imagePlaceholder);
+                }
+
+                const content = document.createElement('div');
+                content.className = 'service-card-content';
+                const topline = document.createElement('div');
+                topline.className = 'service-card-topline';
+                const category = document.createElement('span');
+                category.className = 'category-badge';
+                category.textContent = service.category;
+                const publishedBadge = document.createElement('span');
+                publishedBadge.className = 'preview-badge';
+                publishedBadge.textContent = 'منشورة';
+                topline.append(category, publishedBadge);
+
+                const title = document.createElement('h2');
+                title.textContent = service.name;
+                const description = document.createElement('p');
+                description.className = 'service-card-description';
+                description.textContent = service.description;
+                const provider = document.createElement('p');
+                provider.className = 'service-card-provider';
+                provider.append(document.createTextNode(`مقدم الخدمة: ${service.providerName || 'غير متاح'}`));
+                const providerServicesLink = document.createElement('a');
+                providerServicesLink.href = `services.html?provider=${encodeURIComponent(service.ownerId)}`;
+                providerServicesLink.textContent = 'عرض خدماته';
+                provider.append(document.createTextNode(' · '), providerServicesLink);
+
+                const bottom = document.createElement('div');
+                bottom.className = 'service-card-bottom';
+                const price = document.createElement('span');
+                price.className = 'service-price';
+                price.textContent = formatPrice(service.price);
+                const detailsLink = document.createElement('a');
+                detailsLink.className = 'primary-button';
+                detailsLink.href = `service-details.html?id=${encodeURIComponent(service.id)}`;
+                detailsLink.textContent = 'عرض التفاصيل';
+                bottom.append(price, detailsLink);
+                content.append(topline, title, description, provider, bottom);
+                article.append(content);
+                return article;
+            }
+
+            function renderServices() {
+                const query = searchInput.value.trim().toLocaleLowerCase('ar');
+                const selectedCategory = categoryFilter.value;
+                const matchingServices = services.filter((service) => {
+                    const searchableText = `${service.name} ${service.description} ${service.providerName}`.toLocaleLowerCase('ar');
+                    return (!providerFilter || service.ownerId === providerFilter)
+                        && (!query || searchableText.includes(query))
+                        && (!selectedCategory || service.category === selectedCategory);
+                });
+
+                serviceGrid.replaceChildren();
+                matchingServices.forEach((service) => {
+                    serviceGrid.append(createServiceCard(service));
+                });
+                resultSummary.textContent = `عدد الخدمات المطابقة: ${matchingServices.length}`;
+                emptyState.hidden = matchingServices.length > 0;
+                if (services.length && !matchingServices.length) {
+                    emptyState.textContent = 'لا توجد خدمات تطابق البحث أو التصنيف أو مقدم الخدمة المحدد.';
+                } else if (!services.length) {
+                    emptyState.textContent = 'لا توجد خدمات منشورة بعد.';
+                }
+            }
+
+            searchInput.addEventListener('input', renderServices);
+            categoryFilter.addEventListener('change', renderServices);
+            try {
+                services = await PlatformServiceStore.getAll();
+                renderServices();
+            } catch (error) {
+                serviceGrid.replaceChildren();
+                resultSummary.textContent = '';
+                emptyState.textContent = error.message || 'تعذر تحميل الخدمات المنشورة.';
+                emptyState.hidden = false;
+            }
+        })();
+    </script>
+</body>
+</html>

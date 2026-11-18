@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | منصتي</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f6f9fd;
+            color: #172b4d;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            padding: 18px 24px;
+            background: linear-gradient(115deg, #102247, #174a88);
+            box-shadow: 0 4px 18px rgba(16, 34, 71, 0.16);
+        }
+
+        .header-inner {
+            width: min(100%, 1160px);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand-name {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .home-link {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .home-link:hover,
+        .home-link:focus-visible {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        main {
+            width: min(100%, 520px);
+            margin: 0 auto;
+            padding: 48px 24px;
+            flex: 1;
+            display: grid;
+            align-content: center;
+        }
+
+        .auth-card {
+            padding: clamp(24px, 6vw, 40px);
+            border: 1px solid #e3ebf5;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 16px 42px rgba(16, 42, 86, 0.09);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #102a56;
+            font-size: clamp(27px, 5vw, 34px);
+            line-height: 1.4;
+        }
+
+        .intro {
+            margin: 0 0 28px;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        form {
+            display: grid;
+            gap: 17px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            color: #243b5a;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            min-height: 48px;
+            padding: 11px 13px;
+            border: 1px solid #d5dfeb;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #172b4d;
+            font: inherit;
+            font-size: 15px;
+        }
+
+        input::placeholder {
+            color: #9aa8b9;
+        }
+
+        input:focus-visible {
+            border-color: #1769c2;
+            outline: 3px solid rgba(23, 105, 194, 0.15);
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .password-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-control input {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .toggle-password {
+            min-height: 48px;
+            padding: 0 12px;
+            border: 1px solid #d5dfeb;
+            border-radius: 10px;
+            background: #eef6ff;
+            color: #1769c2;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .toggle-password:hover,
+        .toggle-password:focus-visible {
+            background: #e2efff;
+        }
+
+        .primary-button {
+            width: 100%;
+            min-height: 50px;
+            margin-top: 4px;
+            border: 0;
+            border-radius: 11px;
+            background: #1769c2;
+            color: #ffffff;
+            font: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(23, 105, 194, 0.2);
+            transition: background-color 160ms ease, transform 160ms ease;
+        }
+
+        .primary-button:hover {
+            background: #1056a2;
+            transform: translateY(-1px);
+        }
+
+        .form-feedback {
+            margin: 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .form-feedback.error {
+            border: 1px solid #f1c5c5;
+            background: #fff3f3;
+            color: #a12c2c;
+        }
+
+        .form-feedback.info {
+            border: 1px solid #c9dcf4;
+            background: #eef6ff;
+            color: #385b83;
+        }
+
+        .form-feedback.success {
+            border: 1px solid #b9dfca;
+            background: #f0fbf4;
+            color: #21613b;
+        }
+
+        .text-button {
+            justify-self: start;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: #1769c2;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .demo-note {
+            margin: 18px 0 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #eef6ff;
+            color: #385b83;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .auth-switch {
+            margin: 22px 0 0;
+            color: #64748b;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .auth-switch a {
+            color: #1769c2;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-switch a:hover,
+        .auth-switch a:focus-visible {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        footer {
+            padding: 18px 24px;
+            border-top: 1px solid #e3ebf5;
+            color: #718096;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px 18px;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+            }
+
+            .brand-name {
+                font-size: 24px;
+            }
+
+            main {
+                padding: 28px 16px;
+            }
+
+            .auth-card {
+                border-radius: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-inner">
+            <a class="brand-link" href="index.html" aria-label="منصتي - الصفحة الرئيسية">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </a>
+            <a class="home-link" href="index.html">العودة للرئيسية</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="auth-card" aria-labelledby="login-title">
+            <h1 id="login-title">تسجيل الدخول</h1>
+            <p class="intro">سجّل الدخول إلى حسابك على منصتي.</p>
+
+            <form id="login-form" novalidate autocomplete="off">
+                <div class="field">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input id="email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">كلمة المرور</label>
+                    <div class="password-control">
+                        <input id="password" name="password" type="password" maxlength="128" autocomplete="current-password" placeholder="أدخل كلمة المرور" aria-describedby="login-feedback" required>
+                        <button class="toggle-password" type="button" aria-controls="password" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button>
+                    </div>
+                </div>
+
+                <button class="primary-button" type="submit">تسجيل الدخول</button>
+                <button class="text-button" id="forgot-password" type="button">نسيت كلمة المرور؟</button>
+                <p id="login-feedback" class="form-feedback" aria-live="polite" hidden></p>
+                <button class="text-button" id="resend-confirmation" type="button" hidden>إعادة إرسال رسالة التأكيد</button>
+            </form>
+
+            <p class="demo-note">تتم إدارة تسجيل الدخول والجلسات عبر Supabase Auth.</p>
+            <p class="auth-switch">ليس لديك حساب؟ <a href="signup.html">إنشاء حساب جديد</a></p>
+        </section>
+    </main>
+
+    <footer>جميع الحقوق محفوظة © 2026</footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="auth-store.js"></script>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const loginFeedback = document.getElementById('login-feedback');
+        const loginEmailInput = document.getElementById('email');
+        const loginPasswordInput = document.getElementById('password');
+        const forgotPasswordButton = document.getElementById('forgot-password');
+        const resendConfirmationButton = document.getElementById('resend-confirmation');
+
+        function showLoginError(message, input) {
+            loginFeedback.textContent = message;
+            loginFeedback.className = 'form-feedback error';
+            loginFeedback.setAttribute('role', 'alert');
+            loginFeedback.hidden = false;
+            input.setAttribute('aria-invalid', 'true');
+            input.focus();
+        }
+
+        document.querySelectorAll('.toggle-password').forEach((toggle) => {
+            toggle.addEventListener('click', () => {
+                const input = document.getElementById(toggle.getAttribute('aria-controls'));
+                const shouldShow = input.type === 'password';
+
+                input.type = shouldShow ? 'text' : 'password';
+                toggle.textContent = shouldShow ? 'إخفاء' : 'إظهار';
+                toggle.setAttribute('aria-label', shouldShow ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
+                toggle.setAttribute('aria-pressed', String(shouldShow));
+            });
+        });
+
+        function resetLoginPassword() {
+            loginPasswordInput.value = '';
+            loginPasswordInput.type = 'password';
+            const toggle = document.querySelector('.toggle-password');
+            toggle.textContent = 'إظهار';
+            toggle.setAttribute('aria-label', 'إظهار كلمة المرور');
+            toggle.setAttribute('aria-pressed', 'false');
+        }
+
+        forgotPasswordButton.addEventListener('click', async () => {
+            loginFeedback.hidden = true;
+            resendConfirmationButton.hidden = true;
+            loginEmailInput.removeAttribute('aria-invalid');
+
+            if (!loginEmailInput.value.trim()) {
+                showLoginError('أدخل بريدك الإلكتروني أولًا لاستعادة كلمة المرور.', loginEmailInput);
+                return;
+            }
+
+            if (!loginEmailInput.checkValidity()) {
+                showLoginError('يرجى إدخال بريد إلكتروني صحيح.', loginEmailInput);
+                return;
+            }
+
+            forgotPasswordButton.disabled = true;
+            try {
+                await PlatformAuth.requestPasswordReset(loginEmailInput.value);
+                loginFeedback.textContent = 'إذا كان البريد مرتبطًا بحساب، فستصلك رسالة لاستعادة كلمة المرور.';
+                loginFeedback.className = 'form-feedback success';
+                loginFeedback.setAttribute('role', 'status');
+                loginFeedback.hidden = false;
+            } catch (error) {
+                loginFeedback.textContent = error.message || 'تعذر إرسال رسالة استعادة كلمة المرور.';
+                loginFeedback.className = 'form-feedback error';
+                loginFeedback.setAttribute('role', 'alert');
+                loginFeedback.hidden = false;
+            } finally {
+                forgotPasswordButton.disabled = false;
+            }
+        });
+
+        resendConfirmationButton.addEventListener('click', async () => {
+            loginFeedback.hidden = true;
+            loginEmailInput.removeAttribute('aria-invalid');
+            const email = loginEmailInput.value.trim();
+
+            if (!email || !loginEmailInput.checkValidity()) {
+                showLoginError('أدخل بريدًا إلكترونيًا صحيحًا لإعادة إرسال رسالة التأكيد.', loginEmailInput);
+                return;
+            }
+
+            resendConfirmationButton.disabled = true;
+            try {
+                await PlatformAuth.resendSignupConfirmation(email);
+                loginFeedback.textContent = 'إذا كان الحساب بحاجة إلى التأكيد، فستصلك رسالة تأكيد جديدة.';
+                loginFeedback.className = 'form-feedback success';
+                loginFeedback.setAttribute('role', 'status');
+                loginFeedback.hidden = false;
+            } catch (error) {
+                loginFeedback.textContent = error.message || 'تعذر إعادة إرسال رسالة التأكيد.';
+                loginFeedback.className = 'form-feedback error';
+                loginFeedback.setAttribute('role', 'alert');
+                loginFeedback.hidden = false;
+            } finally {
+                resendConfirmationButton.disabled = false;
+            }
+        });
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            loginFeedback.hidden = true;
+            resendConfirmationButton.hidden = true;
+            [loginEmailInput, loginPasswordInput].forEach((input) => {
+                input.removeAttribute('aria-invalid');
+            });
+
+            if (!loginEmailInput.value.trim()) {
+                showLoginError('يرجى إدخال البريد الإلكتروني.', loginEmailInput);
+                return;
+            }
+
+            if (!loginEmailInput.checkValidity()) {
+                showLoginError('يرجى إدخال بريد إلكتروني صحيح، مثل name@example.com.', loginEmailInput);
+                return;
+            }
+
+            if (!loginPasswordInput.value) {
+                showLoginError('يرجى إدخال كلمة المرور.', loginPasswordInput);
+                return;
+            }
+
+            const submitButton = loginForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            try {
+                await PlatformAuth.login(loginEmailInput.value.trim(), loginPasswordInput.value);
+                resetLoginPassword();
+                const next = new URLSearchParams(window.location.search).get('next');
+                const safeNext = next && /^service-details\.html\?id=[0-9a-f-]+$/i.test(next)
+                    ? next
+                    : 'dashboard.html';
+                window.location.href = safeNext;
+            } catch (error) {
+                const emailNotConfirmed = error.code === 'email_not_confirmed'
+                    || /email not confirmed/i.test(error.message || '');
+                loginFeedback.textContent = emailNotConfirmed
+                    ? 'لم يتم تأكيد بريدك الإلكتروني بعد. أكّد البريد أو أعد إرسال رسالة التأكيد.'
+                    : error.message || 'تعذر تسجيل الدخول.';
+                loginFeedback.className = 'form-feedback error';
+                loginFeedback.setAttribute('role', emailNotConfirmed ? 'status' : 'alert');
+                loginFeedback.hidden = false;
+                if (emailNotConfirmed) {
+                    resendConfirmationButton.hidden = false;
+                    resendConfirmationButton.focus();
+                } else {
+                    loginPasswordInput.setAttribute('aria-invalid', 'true');
+                    loginPasswordInput.focus();
+                }
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

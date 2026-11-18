@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملفي الشخصي | منصتي</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f6f9fd;
+            color: #172b4d;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            padding: 18px 24px;
+            background: linear-gradient(115deg, #102247, #174a88);
+            box-shadow: 0 4px 18px rgba(16, 34, 71, 0.16);
+        }
+
+        .header-inner {
+            width: min(100%, 1160px);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand-name {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        main {
+            width: min(100%, 700px);
+            margin: 0 auto;
+            padding: 56px 24px;
+            flex: 1;
+            display: grid;
+            align-content: center;
+        }
+
+        .profile-card {
+            padding: clamp(24px, 6vw, 42px);
+            border: 1px solid #e3ebf5;
+            border-radius: 22px;
+            background: #ffffff;
+            box-shadow: 0 16px 42px rgba(16, 42, 86, 0.09);
+        }
+
+        .profile-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #102a56;
+            font-size: clamp(27px, 5vw, 34px);
+            line-height: 1.4;
+        }
+
+        .preview-badge {
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: #eef6ff;
+            color: #1769c2;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .notice {
+            margin: 0 0 24px;
+            padding: 13px 15px;
+            border: 1px solid #c9dcf4;
+            border-radius: 11px;
+            background: #eef6ff;
+            color: #385b83;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .profile-details {
+            margin: 0;
+            border: 1px solid #e3ebf5;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .profile-row {
+            padding: 16px 18px;
+            display: grid;
+            grid-template-columns: minmax(110px, 0.7fr) 1.3fr;
+            gap: 16px;
+            align-items: start;
+        }
+
+        .profile-row + .profile-row {
+            border-top: 1px solid #e8eef5;
+        }
+
+        dt {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        dd {
+            margin: 0;
+            color: #17365f;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state {
+            padding: 18px;
+            border: 1px dashed #bfd0e4;
+            border-radius: 12px;
+            color: #52647d;
+            line-height: 1.8;
+        }
+
+        .empty-state a {
+            color: #1769c2;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .empty-state a:hover,
+        .empty-state a:focus-visible {
+            text-decoration: underline;
+        }
+
+        .profile-actions {
+            margin-top: 26px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .profile-form {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .profile-form .field {
+            display: grid;
+            gap: 7px;
+        }
+
+        .profile-form label {
+            color: #29486f;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .profile-form input {
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #d5dfeb;
+            border-radius: 9px;
+            font: inherit;
+        }
+
+        .profile-form .wide,
+        .profile-form .form-feedback {
+            grid-column: 1 / -1;
+        }
+
+        .profile-form button {
+            min-height: 44px;
+            border: 1px solid #1769c2;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #1769c2;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .profile-form button:hover,
+        .profile-form button:focus-visible {
+            background: #eef6ff;
+        }
+
+        .profile-form [type="email"],
+        .profile-form [type="tel"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        .form-feedback {
+            margin: 0;
+            color: #1769c2;
+            font-size: 14px;
+        }
+
+        .form-feedback.error {
+            color: #a12c2c;
+        }
+
+        .profile-actions a,
+        .profile-actions button {
+            min-height: 46px;
+            padding: 11px 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #1769c2;
+            border-radius: 10px;
+            background: #1769c2;
+            color: #ffffff;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 160ms ease;
+        }
+
+        .profile-actions a:hover,
+        .profile-actions button:hover {
+            background: #1056a2;
+        }
+
+        .profile-actions .secondary-link {
+            background: #ffffff;
+            color: #1769c2;
+        }
+
+        .profile-actions .secondary-link:hover {
+            background: #eef6ff;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        footer {
+            padding: 18px 24px;
+            border-top: 1px solid #e3ebf5;
+            color: #718096;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px 18px;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+            }
+
+            .brand-name {
+                font-size: 24px;
+            }
+
+            main {
+                padding: 28px 16px;
+            }
+
+            .profile-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .profile-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .profile-form {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-form .wide,
+            .profile-form .form-feedback {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-inner">
+            <a class="brand-link" href="index.html" aria-label="منصتي - الصفحة الرئيسية">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="profile-card" aria-labelledby="profile-title">
+            <div class="profile-heading">
+                <h1 id="profile-title">ملفي الشخصي</h1>
+                <span class="preview-badge">حساب موثّق</span>
+            </div>
+
+                <p class="notice">تُدار المصادقة عبر Supabase Auth، وتُحمى بيانات الملف الشخصي بسياسات قاعدة البيانات.</p>
+
+            <dl class="profile-details" id="profile-details" hidden>
+                <div class="profile-row">
+                    <dt>الاسم الكامل</dt>
+                    <dd id="profile-name"></dd>
+                </div>
+                <div class="profile-row">
+                    <dt>البريد الإلكتروني</dt>
+                    <dd id="profile-email"></dd>
+                </div>
+                <div class="profile-row">
+                    <dt>رقم الهاتف</dt>
+                    <dd id="profile-phone"></dd>
+                </div>
+            </dl>
+
+            <form class="profile-form" id="profile-form" novalidate>
+                <div class="field">
+                    <label for="edit-name">الاسم الكامل</label>
+                    <input id="edit-name" name="name" type="text" maxlength="90" required>
+                </div>
+                <div class="field">
+                    <label for="edit-email">البريد الإلكتروني</label>
+                    <input id="edit-email" name="email" type="email" maxlength="254" required>
+                </div>
+                <div class="field wide">
+                    <label for="edit-phone">رقم الهاتف</label>
+                    <input id="edit-phone" name="phone" type="tel" maxlength="25" required>
+                </div>
+                <button class="secondary-link" type="submit">حفظ بيانات الملف الشخصي</button>
+                <p class="form-feedback" id="profile-feedback" aria-live="polite"></p>
+            </form>
+
+            <p class="empty-state" id="empty-state" hidden>
+                تعذر العثور على بيانات الملف الشخصي لهذا الحساب. سجّل الخروج وحاول تسجيل الدخول مجددًا.
+            </p>
+
+            <div class="profile-actions">
+                <button id="logout-button" type="button">تسجيل الخروج</button>
+                <a class="secondary-link" href="dashboard.html">لوحة التحكم</a>
+                <a class="secondary-link" href="index.html">العودة إلى الرئيسية</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>جميع الحقوق محفوظة © 2026</footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="auth-store.js"></script>
+    <script>
+        (async function initializeProfile() {
+            const profileForm = document.getElementById('profile-form');
+            const profileFeedback = document.getElementById('profile-feedback');
+            const nameInput = document.getElementById('edit-name');
+            const emailInput = document.getElementById('edit-email');
+            const phoneInput = document.getElementById('edit-phone');
+            let currentUser;
+
+            try {
+                currentUser = await PlatformAuth.getCurrentUser();
+            } catch (error) {
+                profileFeedback.textContent = error.message || 'تعذر تحميل الملف الشخصي.';
+                profileFeedback.className = 'form-feedback error';
+                return;
+            }
+            if (!currentUser) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            function renderProfile(user) {
+                document.getElementById('profile-name').textContent = user.name;
+                document.getElementById('profile-email').textContent = user.email;
+                document.getElementById('profile-phone').textContent = user.phone;
+                nameInput.value = user.name;
+                emailInput.value = user.email;
+                phoneInput.value = user.phone;
+                document.getElementById('profile-details').hidden = false;
+            }
+
+            renderProfile(currentUser);
+            profileForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                if (!nameInput.value.trim()) {
+                    profileFeedback.textContent = 'يرجى إدخال الاسم الكامل.';
+                    profileFeedback.className = 'form-feedback error';
+                    nameInput.focus();
+                    return;
+                }
+                if (!emailInput.checkValidity()) {
+                    profileFeedback.textContent = 'يرجى إدخال بريد إلكتروني صحيح.';
+                    profileFeedback.className = 'form-feedback error';
+                    emailInput.focus();
+                    return;
+                }
+                const normalizedPhone = phoneInput.value.trim()
+                    .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+                    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
+                if (!/^\+?[\d\s()-]+$/.test(normalizedPhone) || normalizedPhone.replace(/\D/g, '').length < 7) {
+                    profileFeedback.textContent = 'يرجى إدخال رقم هاتف صحيح يحتوي على 7 أرقام على الأقل.';
+                    profileFeedback.className = 'form-feedback error';
+                    phoneInput.focus();
+                    return;
+                }
+
+                try {
+                    const updatedUser = await PlatformAuth.updateProfile({
+                        name: nameInput.value,
+                        email: emailInput.value,
+                        phone: normalizedPhone
+                    });
+                    renderProfile(updatedUser);
+                    profileFeedback.textContent = updatedUser.emailChangePending
+                        ? 'تم حفظ الملف الشخصي. أكّد تغيير البريد عبر رسالة التأكيد المرسلة إليك.'
+                        : 'تم حفظ بيانات الملف الشخصي.';
+                    profileFeedback.className = 'form-feedback';
+                } catch (error) {
+                    profileFeedback.textContent = error.message || 'تعذر حفظ بيانات الملف الشخصي.';
+                    profileFeedback.className = 'form-feedback error';
+                }
+            });
+
+            document.getElementById('logout-button').addEventListener('click', async () => {
+                try {
+                    await PlatformAuth.logout();
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    profileFeedback.textContent = error.message || 'تعذر تسجيل الخروج.';
+                    profileFeedback.className = 'form-feedback error';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

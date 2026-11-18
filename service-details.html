@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الخدمة | منصتي</title>
+    <link rel="stylesheet" href="services.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand-link" href="index.html" aria-label="منصتي - الصفحة الرئيسية">
+                <span class="brand-mark" aria-hidden="true">م</span>
+                <span class="brand-name">منصتي</span>
+            </a>
+            <nav class="header-links" aria-label="روابط الصفحة">
+                <a href="services.html">الخدمات</a>
+                <a class="primary-link" href="add-service.html">أضف خدمتك</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="services-page-main">
+        <div class="page-heading">
+            <p class="eyebrow">تفاصيل الخدمة</p>
+            <h1>معلومات الخدمة</h1>
+            <p class="page-description">راجع تفاصيل الخدمة وسجّل طلبك من حسابك.</p>
+        </div>
+
+        <p class="demo-notice">يُسجّل سعر الطلب من قاعدة البيانات وقت إنشائه. لا يوجد دفع إلكتروني في هذه النسخة.</p>
+
+        <section class="panel details-panel" id="service-details" aria-label="تفاصيل الخدمة" hidden>
+            <div id="service-image-container"></div>
+            <div class="details-content">
+                <span class="category-badge" id="service-category"></span>
+                <h2 id="service-name"></h2>
+                <p class="details-description" id="service-description"></p>
+                <dl class="details-facts">
+                    <div>
+                        <dt>السعر</dt>
+                        <dd id="service-price"></dd>
+                    </div>
+                    <div>
+                        <dt>مقدم الخدمة</dt>
+                        <dd id="provider-name"></dd>
+                    </div>
+                    <div>
+                        <dt>نوع النشر</dt>
+                        <dd id="service-status"></dd>
+                    </div>
+                </dl>
+                <div class="contact-actions">
+                    <button class="primary-button" id="order-service" type="button" hidden>اطلب هذه الخدمة</button>
+                    <a class="primary-button" id="login-to-order" href="login.html" hidden>سجّل الدخول لطلب الخدمة</a>
+                    <a class="secondary-button" id="contact-provider" hidden>تواصل مع مقدم الخدمة</a>
+                    <a class="secondary-button" id="edit-service" hidden>تعديل الخدمة</a>
+                    <button class="secondary-button" id="delete-service" type="button" hidden>حذف الخدمة</button>
+                    <a class="secondary-button" href="services.html">العودة للخدمات</a>
+                </div>
+                <p class="form-feedback" id="service-action-feedback" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <section class="empty-state" id="service-not-found" hidden>
+            <span id="service-not-found-message">لم نعثر على هذه الخدمة أو لا تملك صلاحية عرضها.</span>
+            <a class="primary-button" href="services.html">عرض الخدمات</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">طلبات الخدمات تُحفظ في حسابك؛ لا يتم تحصيل أي مبلغ إلكترونيًا.</footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="services-store.js"></script>
+    <script src="auth-store.js"></script>
+    <script>
+        (async function initializeServiceDetails() {
+            const serviceId = new URLSearchParams(window.location.search).get('id');
+            const detailsPanel = document.getElementById('service-details');
+            const notFoundPanel = document.getElementById('service-not-found');
+            const feedback = document.getElementById('service-action-feedback');
+            if (!serviceId) {
+                notFoundPanel.hidden = false;
+                return;
+            }
+
+            let currentUser = null;
+            try {
+                currentUser = await PlatformAuth.getCurrentUser();
+            } catch (error) {
+                document.getElementById('service-not-found-message').textContent =
+                    error.message || 'تعذر التحقق من جلسة الحساب.';
+                notFoundPanel.hidden = false;
+                return;
+            }
+
+            let service = null;
+            try {
+                if (currentUser) {
+                    service = await PlatformServiceStore.getById(serviceId, currentUser.id);
+                }
+                if (!service) {
+                    service = await PlatformServiceStore.getById(serviceId);
+                }
+            } catch (error) {
+                document.getElementById('service-not-found-message').textContent =
+                    error.message || 'تعذر تحميل تفاصيل الخدمة.';
+                notFoundPanel.hidden = false;
+                return;
+            }
+            if (!service) {
+                notFoundPanel.hidden = false;
+                return;
+            }
+
+            document.title = `${service.name} | منصتي`;
+            document.getElementById('service-category').textContent = service.category;
+            document.getElementById('service-name').textContent = service.name;
+            document.getElementById('service-description').textContent = service.description;
+            const providerElement = document.getElementById('provider-name');
+            providerElement.textContent = service.providerName || (currentUser && service.ownerId === currentUser.id
+                ? currentUser.name
+                : 'مقدم الخدمة');
+            const providerServicesLink = document.createElement('a');
+            providerServicesLink.href = `services.html?provider=${encodeURIComponent(service.ownerId)}`;
+            providerServicesLink.textContent = 'عرض خدمات مقدم الخدمة';
+            providerServicesLink.className = 'text-link';
+            providerElement.append(document.createElement('br'), providerServicesLink);
+
+            document.getElementById('service-price').textContent = new Intl.NumberFormat('ar-EG', {
+                style: 'currency',
+                currency: 'EGP',
+                maximumFractionDigits: 2
+            }).format(service.price);
+            const statusLabels = {
+                draft: 'مسودة',
+                published: 'منشورة',
+                archived: 'مؤرشفة'
+            };
+            document.getElementById('service-status').textContent = statusLabels[service.status] || service.status;
+
+            const imageContainer = document.getElementById('service-image-container');
+            if (service.imageData) {
+                const image = document.createElement('img');
+                image.className = 'details-image';
+                image.src = service.imageData;
+                image.alt = service.images[0].altText || `صورة خدمة ${service.name}`;
+                imageContainer.append(image);
+            } else {
+                const imagePlaceholder = document.createElement('div');
+                imagePlaceholder.className = 'details-image-placeholder';
+                imagePlaceholder.textContent = 'لا توجد صورة مرفقة';
+                imageContainer.append(imagePlaceholder);
+            }
+
+            if (currentUser && service.ownerId === currentUser.id) {
+                const editLink = document.getElementById('edit-service');
+                editLink.href = `add-service.html?id=${encodeURIComponent(service.id)}`;
+                editLink.hidden = false;
+                const deleteButton = document.getElementById('delete-service');
+                deleteButton.hidden = false;
+                deleteButton.addEventListener('click', async () => {
+                    if (!window.confirm('هل تريد حذف هذه الخدمة؟')) {
+                        return;
+                    }
+                    deleteButton.disabled = true;
+                    try {
+                        if (!await PlatformServiceStore.remove(service.id, currentUser.id)) {
+                            throw new Error('لم يتم حذف الخدمة؛ لا تملك صلاحية حذفها.');
+                        }
+                        window.location.href = `services.html?provider=${encodeURIComponent(currentUser.id)}`;
+                    } catch (error) {
+                        feedback.textContent = error.message || 'تعذر حذف الخدمة.';
+                        feedback.className = 'form-feedback error';
+                        deleteButton.disabled = false;
+                    }
+                });
+            } else if (currentUser) {
+                const orderButton = document.getElementById('order-service');
+                orderButton.hidden = false;
+                orderButton.addEventListener('click', async () => {
+                    orderButton.disabled = true;
+                    feedback.textContent = '';
+                    try {
+                        const order = await PlatformServiceStore.createOrder(currentUser.id, service.id);
+                        feedback.className = 'form-feedback success';
+                        feedback.textContent = `تم إرسال طلبك. السعر المسجل: ${new Intl.NumberFormat('ar-EG', {
+                            style: 'currency',
+                            currency: 'EGP',
+                            maximumFractionDigits: 2
+                        }).format(Number(order.price_at_order))}. `;
+                        const dashboardLink = document.createElement('a');
+                        dashboardLink.href = 'dashboard.html#my-requests';
+                        dashboardLink.textContent = 'عرض طلباتي';
+                        feedback.append(dashboardLink);
+                    } catch (error) {
+                        feedback.textContent = error.message || 'تعذر إنشاء الطلب.';
+                        feedback.className = 'form-feedback error';
+                    } finally {
+                        orderButton.disabled = false;
+                    }
+                });
+            } else {
+                const loginLink = document.getElementById('login-to-order');
+                loginLink.href = `login.html?next=${encodeURIComponent(`service-details.html?id=${service.id}`)}`;
+                loginLink.hidden = false;
+            }
+
+            if (service.contactEmail) {
+                const contactLink = document.getElementById('contact-provider');
+                contactLink.href = `mailto:${service.contactEmail}?subject=${encodeURIComponent(`استفسار عن الخدمة: ${service.name}`)}`;
+                contactLink.hidden = false;
+            }
+            detailsPanel.hidden = false;
+        })();
+    </script>
+</body>
+</html>
